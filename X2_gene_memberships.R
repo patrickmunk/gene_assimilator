@@ -8,7 +8,7 @@ userFileExts = tools::file_ext(inputMultiFastas)
 #inputMultiFastas = inputMultiFastas[grep(fileExtension, inputMultiFastas)]
 inputMultiFastas = inputMultiFastas[userFileExts %in% allowed_exts]
 inputMultiFastasPath = paste(opt$dbdir, inputMultiFastas, sep ="/")
-fileAbbreviations = substr(inputMultiFastas, 1, 3) %>% tolower()
+fileAbbreviations = substr(inputMultiFastas, 1, 3) %>% toupper()
 
 SelectRelevantFiles = function(search_path, good_file_exts) {
   input_files = list.files(search_path)
@@ -49,7 +49,7 @@ renamedFileExt = "fa"
 userGeneDbs = list()
 userGeneDbs$inputMultiFastas = files2include
 userGeneDbs$userGeneDbExts = tools::file_ext(userGeneDbs$inputMultiFastas)
-userGeneDbs$fileAbbreviations = substr(userGeneDbs$inputMultiFastas, 1, 3) %>% tolower()
+userGeneDbs$fileAbbreviations = substr(userGeneDbs$inputMultiFastas, 1, 3) %>% toupper()
 userGeneDbs$inputMultiFastaPaths = file.path(opt$dbdir, userGeneDbs$inputMultiFastas)
 userGeneDbs$inputFastaBasenames = tools::file_path_sans_ext(inputMultiFastas)
 userGeneDbs$outputMultiFastaFiles = paste(userGeneDbs$inputFastaBasenames, renamedFileString, ".", "fa", sep = "")
@@ -88,7 +88,8 @@ MakeOverviewTable = function(input_fasta_files, db_shortnames, output_fasta_file
 GeneOverviewTable = MakeOverviewTable(input_fasta_files = userGeneDbs$inputMultiFastaPaths, 
                   output_fasta_files = userGeneDbs$outputMultiFastaPaths, 
                   db_shortnames = userGeneDbs$fileAbbreviations, 
-                  database_names = userGeneDbs$inputFastaBasenames)
+                  database_names = userGeneDbs$inputFastaBasenames) %>%
+  as_tibble()
 
 write_tsv(x = GeneOverviewTable, 
           file = file.path(opt$outputdir, 
