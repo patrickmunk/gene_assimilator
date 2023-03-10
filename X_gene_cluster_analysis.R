@@ -94,4 +94,4 @@ masterTable = usearchIdenticalClust %>%
 
 # Export the Master table
 overviewMasterTblPath = file.path(opt$outputdir, overviewDirName, paste(opt$prefix, "master_gene_tbl.tsv", sep = "_"))
-write_tsv(uclustSummary, overviewMasterTblPath)
+write_tsv(masterTable, overviewMasterTblPath)
