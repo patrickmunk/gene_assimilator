@@ -16,7 +16,10 @@ us.arg.threads = 8 # Shared for all usearch calls
 # We can also reverse complement with usearc using this arg : -strand both
 
 #us.combined.args = c("-fastx_uniques", us.arg.in.path, "-fastaout", us.arg.out.path, "-sizeout -relabel Uniq -threads", us.arg.threads)
-us.combined.args = c("-fastx_uniques", us.arg.in.path, "-fastaout", us.arg.out.path, "-threads", us.arg.threads, "-tabbedout", us.arg.out.tbl) # better names?
+# us.combined.args = c("-fastx_uniques", us.arg.in.path, "-fastaout", us.arg.out.path, "-threads", us.arg.threads, "-tabbedout", us.arg.out.tbl) # better names?
+# With strands argument. # old 14274. new 14243
+us.combined.args = c("-fastx_uniques", us.arg.in.path, "-fastaout", us.arg.out.path, "-threads", us.arg.threads, "-tabbedout", us.arg.out.tbl, "-strand both") # better names?
+
 #system2("dependencies/usearch", "-fastx_uniques combined_database.fa -fastaout combined_database.uniq.fa -sizeout -relabel Uniq -threads 8")
 system2("dependencies/usearch", us.combined.args)
 
@@ -54,7 +57,7 @@ us.combined.args = c("-cluster_fast", us3.arg.in.path, "-id 0.9 -query_cov 0.9 -
 system2("dependencies/usearch", us.combined.args)
 
 # Read in Usearch cluster data table
-uclustData = read_delim(file = us.arg.out2.path, col_names = F)
+uclustData = read_delim(file = us3.arg.out2.path, col_names = F)
 colnames(uclustData) = c("linetype", "clustnum", "len", "idpercent", "notsure", 
                          "notsure2", "represent_len", "notsure3", "userGeneName", 
                          "represent_seq")

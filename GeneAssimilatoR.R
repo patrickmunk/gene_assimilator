@@ -22,10 +22,10 @@ opt = parse_args(opt_parser);
 
 ### MAIN PROGRAM START ###
 
-# Testing. Manual set CLI arguments
-opt$dbdir = "databases"
-opt$outputdir = "geneAssimilatorOut"
-opt$prefix = "pan"
+# Testing. Manual set CLI arguments - Overwrites CLI input
+#opt$dbdir = "databases"
+#opt$outputdir = "geneAssimilatorOut"
+#opt$prefix = "pan"
 
 # Allowed fasta input db file extensions
 allowed_exts = c("fa", "fna", "fsa", "fasta")
@@ -33,7 +33,12 @@ allowed_exts = c("fa", "fna", "fsa", "fasta")
 # Identifies the sequences in a number of fasta input seqs
 # Renames the fasta seqs so they conform and save the associations between old and new file to disk
 # Outputs rewritten fasta
-source("X2_gene_memberships.R")
+source("scripts/1_gene_memberships.R")
 
 # Cluster analysis of rewritten files
-source("X_gene_cluster_analysis.R")
+source("scripts/2_cluster_analysis.R")
+
+# Now run some basic descriptive plots for the results of gene assimilation
+source("scripts/3_plotting.R")
+
+print("Finished! Thanks for using GeneAssimilatoR")
