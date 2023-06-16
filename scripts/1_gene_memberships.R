@@ -2,6 +2,12 @@
 require("tidyverse")
 require("seqinr")
 
+# If user has supplied an exclusion list - read that in
+if (class(opt$exclude) == "character") {
+  exclusion = read_tsv(opt$exclude) %>% 
+    pull(1)
+}
+
 # Create overview of sequences in each input database
 inputMultiFastas = list.files(opt$dbdir)
 userFileExts = tools::file_ext(inputMultiFastas)
@@ -65,11 +71,17 @@ MakeOverviewTable = function(input_fasta_files, db_shortnames, output_fasta_file
                          whole.header = T,
                          as.string = T,
                          forceDNAtolower = F)
+    # Look for genes to exclude if user has supplied list of exclusion
+    if (class(opt$exclude) == "character") {
+      fasta_i = fasta_i[!names(fasta_i) %in% exclusion]
+    }
+    # Make dataset
     fasta_i_headers = names(fasta_i)
     database_i_name = database_names[i]
     fasta_i_data = data.frame(shortname = paste(db_shortnames[i], 1:length(fasta_i_headers), sep = "_"),
                               database = database_i_name,
-                              fa_header = fasta_i_headers)
+                              fa_header = fasta_i_headers,
+                              gene_len = getLength(fasta_i))
     # Add newly added gene data to the overview table
     geneOverview = rbind(geneOverview, fasta_i_data)
     # Write renamed fasta to file

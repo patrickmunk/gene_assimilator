@@ -93,7 +93,8 @@ masterTable = usearchIdenticalClust %>%
   unique() %>%
   left_join(GeneOverviewTable, by = "shortname") %>%
   left_join(select(uclustData, "userGeneName", "chosenSeq") %>% unique) %>%
-  arrange(userGeneName, chosenSeq, shortname, fa_name)
+  arrange(userGeneName, chosenSeq, shortname, fa_name) %>%
+  relocate(userGeneName, gene_len)
 
 # Export the Master table
 overviewMasterTblPath = file.path(opt$outputdir, overviewDirName, paste(opt$prefix, "master_gene_tbl.tsv", sep = "_"))

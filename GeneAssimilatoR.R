@@ -14,7 +14,9 @@ option_list = list(
   make_option(c("-o", "--outputdir"), type="character", default=NULL,
               help="Directory for GeneAssimilator output", metavar="character"),
   make_option(c("-p", "--prefix"), type="character", default=NULL,
-              help="Prefix for the new assimilated db. Used in files and genes", metavar="character")
+              help="Prefix for the new assimilated db. Used in files and genes", metavar="character"),
+  make_option(c("-e", "--exclude"), type="character", default=NULL,
+              help="One-column file with gene names to exclude/filter out when seen", metavar="character")
   );
 
 opt_parser = OptionParser(option_list=option_list);
@@ -26,6 +28,7 @@ opt = parse_args(opt_parser);
 #opt$dbdir = "databases"
 #opt$outputdir = "geneAssimilatorOut"
 #opt$prefix = "pan"
+#opt$exclude = "seqsForExclusion/exclusion_seqs.tsv"
 
 # Allowed fasta input db file extensions
 allowed_exts = c("fa", "fna", "fsa", "fasta")
