@@ -1,3 +1,6 @@
+# This file is not actually used at the moment
+# It should be used to automate the installation of usearch which cannot legally be distributed with the software
+
 # The program needs the uclust algorithm, but for licencing reasons,
 # We cannot distribute the software with this program
 

@@ -7,21 +7,20 @@ dir.create(file.path(".", "usearch_clustering"), showWarnings = FALSE)
 #shell("scripts/run_uclust.sh")
 # Make this more elegant. Distribute executable? Cross-OS? Not hardcoded params
 
+# The usearch to use. Either one auto-installed in user directory or one in user path
+#usearch.path = "dependencies/usearch"
+usearch.path = "usearch"
+
 # Get unique sequences from the input sequences
 # Construct arguments for usearch fastx_uniques
 us.arg.in.path = file.path(opt$outputdir, mergedDBDirName, "combined_database.fa")
 us.arg.out.path = file.path(opt$outputdir, mergedDBDirName, "combined_database.uniq.fa")
 us.arg.out.tbl = file.path(opt$outputdir, mergedDBDirName, "combined_database.uniq.tsv")
 us.arg.threads = 8 # Shared for all usearch calls
-# We can also reverse complement with usearc using this arg : -strand both
 
-#us.combined.args = c("-fastx_uniques", us.arg.in.path, "-fastaout", us.arg.out.path, "-sizeout -relabel Uniq -threads", us.arg.threads)
-# us.combined.args = c("-fastx_uniques", us.arg.in.path, "-fastaout", us.arg.out.path, "-threads", us.arg.threads, "-tabbedout", us.arg.out.tbl) # better names?
-# With strands argument. # old 14274. new 14243
 us.combined.args = c("-fastx_uniques", us.arg.in.path, "-fastaout", us.arg.out.path, "-threads", us.arg.threads, "-tabbedout", us.arg.out.tbl, "-strand both") # better names?
 
-#system2("dependencies/usearch", "-fastx_uniques combined_database.fa -fastaout combined_database.uniq.fa -sizeout -relabel Uniq -threads 8")
-system2("dependencies/usearch", us.combined.args)
+system2(usearch.path, us.combined.args)
 
 
 # Save another version of unique genes with user-specified gene abbreviations
@@ -31,30 +30,20 @@ us2.arg.out.path = file.path(opt$outputdir, mergedDBDirName, userFileOutputName)
 us2.arg.out.tbl = file.path(opt$outputdir, mergedDBDirName, paste(userFastaPrefix, "uniq.tsv", sep = ""))
 #us2.combined.args = c("-fastx_uniques", us.arg.in.path, "-fastaout", us2.arg.out.path, "-relabel", userFastaPrefix, "-threads", us.arg.threads) # better names?
 us2.combined.args = c("-fastx_uniques", us.arg.in.path, "-fastaout", us2.arg.out.path, "-relabel", userFastaPrefix, "-threads", us.arg.threads, "-tabbedout", us2.arg.out.tbl) # better names?
-system2("dependencies/usearch", us2.combined.args)
+system2(usearch.path, us2.combined.args)
 
-# Now create an overview table with gene names from individual dbs and merged db
-#TableOfRenamedSeqsFunc = function(fa1_path, fa2_path) {
-#  fa1_names = gsub(">", "", grep(">", readLines(fa1_path), value = T))
-#  fa2_names = gsub(">", "", grep(">", readLines(fa2_path), value = T))
-#  key_table = tibble(OldDbName = fa1_names, UserSeqName = fa2_names)
-#}
-
-#userDbNameKey = TableOfRenamedSeqsFunc(us.arg.out.path, us2.arg.out.path)
 
 # This is perhaps not needed now: we can use one of usearch outputs instead
 usearchIdenticalClust = read_delim(file = us2.arg.out.tbl, col_names = F) %>%
   select(1,2)
 colnames(usearchIdenticalClust) = c("shortname", "userGeneName")
 
-# usearch -fastx_uniques input.fasta -fastaout uniques.fasta -sizeout -relabel Uniq
-
 # Now cluster each remaining user-named gene at 90% ID/cov
 us3.arg.in.path = us2.arg.out.path
 us3.arg.out.path = file.path(opt$outputdir, mergedDBDirName, paste(opt$prefix, ".nr90.fa", sep = ""))
 us3.arg.out2.path =  file.path(opt$outputdir, mergedDBDirName, paste(opt$prefix, ".uc90.tsv", sep = ""))
 us.combined.args = c("-cluster_fast", us3.arg.in.path, "-id 0.9 -query_cov 0.9 -target_cov 0.9 -centroids", us3.arg.out.path, "-uc ", us3.arg.out2.path, "-threads", us.arg.threads)
-system2("dependencies/usearch", us.combined.args)
+system2(usearch.path, us.combined.args)
 
 # Read in Usearch cluster data table
 uclustData = read_delim(file = us3.arg.out2.path, col_names = F)
@@ -86,9 +75,7 @@ uclustSummary = uclustData %>%
 overviewClustFileSummaryPath = file.path(opt$outputdir, overviewDirName, paste(opt$prefix, "cluster_summary.tsv", sep = "_"))
 write_tsv(uclustSummary, overviewClustFileSummaryPath)
 
-# Test with writing a cluster of genes to a file
-#uclustData %>% filter(clustnum == 23) %>% pull(sequence)
-
+# Make a master table with gene info
 masterTable = usearchIdenticalClust %>%
   unique() %>%
   left_join(GeneOverviewTable, by = "shortname") %>%
