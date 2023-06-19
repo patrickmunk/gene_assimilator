@@ -23,7 +23,10 @@ SelectRelevantFiles = function(search_path, good_file_exts) {
   return(good_files)
 }
 
-files2include = SelectRelevantFiles("databases", allowed_exts)
+# Hardcoded version
+# files2include = SelectRelevantFiles("databases", allowed_exts)
+files2include = SelectRelevantFiles(opt$dbdir, allowed_exts)
+
 
 MakeDirs = function(start_path, make_dirs) {
   # Start by creating the output dir requested by user if it does not exist
