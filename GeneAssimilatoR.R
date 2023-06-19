@@ -2,8 +2,8 @@
 
 ##### GeneAssimiloR #####
 
-# This works even in windows when R and Rscript is in the path
-# Rscript GeneAssimilatoR.R --dbdir databases --outputdir panresdb --prefix pan
+# This works also on Windows when R and Rscript and usearch is in path
+# Rscript GeneAssimilatoR.R --dbdir example_databases/ --outputdir panresdb --prefix pan
 
 # Opt-parse arguments from the command line
 library("optparse")
