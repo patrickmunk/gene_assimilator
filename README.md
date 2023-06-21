@@ -13,7 +13,7 @@ We also need a couple of R packages: optparse, tidyverse, seqinr.
 The pipeline was found to both work in R 4.1.1 on Windows 10 and R 4.2.0 on Linux (CentOS).
 
 ## How to run the program
-Rscript GeneAssimilatoR.R --dbdir <myInputDir> --outputdir <myOutputDir> --prefix <myOutputPrefix>
+Rscript GeneAssimilatoR.R --dbdir *myInputDir* --outputdir *myOutputDir* --prefix *myOutputPrefix*
 
 So something like this should work with the example files included:
 Rscript GeneAssimilatoR.R --dbdir example_databases/ --outputdir testOutDir/ --prefix test
