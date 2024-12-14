@@ -36,12 +36,18 @@ allowed_exts = c("fa", "fna", "fsa", "fasta")
 # Identifies the sequences in a number of fasta input seqs
 # Renames the fasta seqs so they conform and save the associations between old and new file to disk
 # Outputs rewritten fasta
-source("scripts/1_gene_memberships.R")
+# Determine the script's directory
+args <- commandArgs(trailingOnly = FALSE)
+script_path <- normalizePath(sub("--file=", "", args[grep("^--file=", args)]))
+script_dir <- dirname(script_path)
+# Source the script
+source(file.path(script_dir, "scripts", "1_gene_memberships.R"))
+#source("scripts/1_gene_memberships.R")
 
 # Cluster analysis of rewritten files
-source("scripts/2_cluster_analysis.R")
+source(file.path(script_dir,"scripts","2_cluster_analysis.R"))
 
 # Now run some basic descriptive plots for the results of gene assimilation
-source("scripts/3_plotting.R")
+source(file.path(script_dir,"scripts","3_plotting.R"))
 
 print("Finished! Thanks for using GeneAssimilatoR")
