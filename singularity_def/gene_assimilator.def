@@ -1,0 +1,55 @@
+Bootstrap: docker
+From: mambaorg/micromamba:latest
+
+%setup
+    # Create a directory for the project
+    mkdir -p /opt/conda/envs/
+
+%environment
+    # Set environment variables
+    export LC_ALL=C.UTF-8
+    export LANG=C.UTF-8
+    export PATH="/opt/conda/envs/bin:/opt/conda/envs/gene_assimilator:$PATH"
+
+%post
+    # Update micromamba and create environment
+    micromamba create --yes -p /opt/conda/envs
+    micromamba install --prefix /opt/conda/envs -y -c conda-forge -c bioconda \
+        r-base=4.2.0 \
+        r-optparse \
+        r-tidyverse \
+        r-seqinr \
+        git \
+        curl
+        
+    # Download USEARCH
+    cd /opt/conda/envs/bin
+    /opt/conda/envs/bin/curl -o /opt/conda/envs/bin/usearch.gz https://www.drive5.com/downloads/usearch11.0.667_i86linux32.gz
+    # Decompress the downloaded file
+    gunzip usearch.gz
+    # Make the file executable
+    chmod +x usearch
+
+    # clone gene_assimilator
+    /opt/conda/envs/bin/git clone https://github.com/SumeetTiwari07/gene_assimilator.git /opt/conda/envs/gene_assimilator
+    
+    # Make scripts executable
+    cd /opt/conda/envs/gene_assimilator/
+    chmod +x GeneAssimilatoR.R
+    chmod +x scripts/*.R
+   
+%runscript
+    exec Rscript /opt/conda/envs/gene_assimilator/GeneAssimilatoR.R "$@"
+
+
+%labels
+    Def file Author: Sumeet Tiwari
+    Version: 1.0
+    Description: "Gene Assimilator (https://github.com/genomicepidemiology/gene_assimilator)"
+
+%help
+    This container includes:
+    - Micromamba base image
+    - R ${R_VERSION}
+    - R packages: optparse, tidyverse, seqinr
+    - Gene Assimilator repository
