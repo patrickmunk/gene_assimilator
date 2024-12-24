@@ -95,7 +95,7 @@ MakeOverviewTable = function(input_fasta_files, db_shortnames, output_fasta_file
     
   }
   geneOverview$fa_name = str_split(geneOverview$fa_header, " ", simplify = T)[,1]
-  geneOverview$fa_descript = str_split(geneOverview$fa_header, " ", simplify = T)[,2]
+  #geneOverview$fa_descript = str_split(geneOverview$fa_header, " ", simplify = T)[,2]
   return(geneOverview)
 }
 

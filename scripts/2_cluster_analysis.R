@@ -3,6 +3,7 @@ require("tidyverse")
 
 # System call to uclust
 dir.create(file.path(".", "usearch_clustering"), showWarnings = FALSE)
+dir.create(file.path(opt$outputdir, "msa"), showWarnings = FALSE)
 
 #shell("scripts/run_uclust.sh")
 # Make this more elegant. Distribute executable? Cross-OS? Not hardcoded params
@@ -42,7 +43,8 @@ colnames(usearchIdenticalClust) = c("shortname", "userGeneName")
 us3.arg.in.path = us2.arg.out.path
 us3.arg.out.path = file.path(opt$outputdir, mergedDBDirName, paste(opt$prefix, ".nr90.fa", sep = ""))
 us3.arg.out2.path =  file.path(opt$outputdir, mergedDBDirName, paste(opt$prefix, ".uc90.tsv", sep = ""))
-us.combined.args = c("-cluster_fast", us3.arg.in.path, "-id 0.9 -query_cov 0.9 -target_cov 0.9 -centroids", us3.arg.out.path, "-uc ", us3.arg.out2.path, "-threads", us.arg.threads)
+us3.arg.out3.path = file.path(opt$outputdir, "msa", "cluster-")
+us.combined.args = c("-cluster_fast", us3.arg.in.path, "-id 0.9 -query_cov 0.9 -target_cov 0.9 -centroids", us3.arg.out.path, "-uc ", us3.arg.out2.path, "-threads", us.arg.threads, "-msaout", us3.arg.out3.path)
 system2(usearch.path, us.combined.args)
 
 # Read in Usearch cluster data table
